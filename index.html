@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin · Sample Manager</title>
+    <title>Admin Sample Panel</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
@@ -42,6 +42,7 @@
             align-items: center;
             justify-content: center;
             padding: 20px;
+            position: relative;
         }
 
         /* Скроллбары */
@@ -63,8 +64,28 @@
             background: var(--border-hover);
         }
 
-        /* Экран авторизации */
+        /* Экран авторизации - по центру */
         .auth-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--bg-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        .auth-screen.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .auth-container {
             width: 100%;
             max-width: 400px;
             background: var(--bg-secondary);
@@ -72,10 +93,6 @@
             border-radius: 24px;
             padding: 40px;
             box-shadow: 0 20px 40px var(--shadow-color);
-        }
-
-        .auth-screen.hidden {
-            display: none;
         }
 
         .auth-header {
@@ -151,6 +168,10 @@
             cursor: pointer;
             transition: all 0.2s ease;
             margin-top: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
 
         .auth-button:hover {
@@ -165,10 +186,13 @@
             text-align: center;
             margin-top: 16px;
             display: none;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
         }
 
         .auth-error.show {
-            display: block;
+            display: flex;
         }
 
         /* Основной интерфейс */
@@ -178,10 +202,13 @@
             display: none;
             flex-direction: column;
             gap: 20px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
         }
 
         .admin-interface.show {
             display: flex;
+            opacity: 1;
         }
 
         /* Хедер */
@@ -647,7 +674,7 @@
             display: none;
             align-items: center;
             justify-content: center;
-            z-index: 1000;
+            z-index: 3000;
         }
 
         .modal.show {
@@ -697,7 +724,7 @@
             display: none;
             align-items: center;
             gap: 10px;
-            z-index: 1000;
+            z-index: 4000;
             box-shadow: 0 8px 16px var(--shadow-color);
         }
 
@@ -787,21 +814,23 @@
 <body>
     <!-- Экран авторизации -->
     <div class="auth-screen" id="authScreen">
-        <div class="auth-header">
-            <i class="fas fa-lock"></i>
-            <h1>Admin Access</h1>
-            <p>Введите пароль для доступа к панели управления</p>
-        </div>
-        <div class="auth-form">
-            <div class="auth-input-group">
-                <label>Пароль</label>
-                <input type="password" class="auth-input" id="passwordInput" placeholder="••••••••">
+        <div class="auth-container">
+            <div class="auth-header">
+                <i class="fas fa-lock"></i>
+                <h1>Admin Access</h1>
+                <p>Введите пароль для доступа к панели управления</p>
             </div>
-            <button class="auth-button" id="loginBtn">
-                <i class="fas fa-sign-in-alt"></i> Войти
-            </button>
-            <div class="auth-error" id="authError">
-                <i class="fas fa-exclamation-circle"></i> Неверный пароль
+            <div class="auth-form">
+                <div class="auth-input-group">
+                    <label>Пароль</label>
+                    <input type="password" class="auth-input" id="passwordInput" placeholder="••••••••" autofocus>
+                </div>
+                <button class="auth-button" id="loginBtn">
+                    <i class="fas fa-sign-in-alt"></i> Войти
+                </button>
+                <div class="auth-error" id="authError">
+                    <i class="fas fa-exclamation-circle"></i> Неверный пароль
+                </div>
             </div>
         </div>
     </div>
@@ -812,7 +841,7 @@
         <div class="admin-header">
             <h1>
                 <i class="fab fa-github"></i>
-                GitHub Sample Manager
+                Admin Sample Panel
             </h1>
             <div class="admin-header-right">
                 <div class="github-status" id="githubStatus">
@@ -837,7 +866,7 @@
                 <div class="panel-section">
                     <div class="section-title">
                         <i class="fab fa-github"></i>
-                        GitHub настройки
+                        GitHub CONNECTION
                     </div>
                     <div class="github-settings">
                         <div class="form-group">
@@ -920,21 +949,10 @@
 
         <!-- Инструкция -->
         <div class="info-section">
-            <div class="info-title">
-                <i class="fas fa-info-circle"></i>
-                Как настроить GitHub
-            </div>
-            <ul class="info-list">
-                <li><i class="fas fa-check-circle"></i> Создайте репозиторий на GitHub (например, "samples")</li>
-                <li><i class="fas fa-check-circle"></i> Создайте Personal Access Token с правами <code>repo</code></li>
-                <li><i class="fas fa-check-circle"></i> Вставьте токен, владельца, название репозитория и ветку</li>
-                <li><i class="fas fa-check-circle"></i> Нажмите "Подключиться к GitHub"</li>
-                <li><i class="fas fa-check-circle"></i> Создавайте папки и загружайте файлы</li>
-            </ul>
             <div class="warning-box">
                 <i class="fas fa-exclamation-triangle"></i>
                 <div>
-                    <strong>Важно:</strong> Файлы будут доступны по ссылкам:<br>
+                    <strong></strong> Файлы доступны по ссылкам:<br>
                     <code>https://raw.githubusercontent.com/username/repo/branch/folder/file.wav</code>
                 </div>
             </div>
@@ -1051,10 +1069,12 @@
         function checkAuth() {
             const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
             if (isLoggedIn) {
-                authScreen.classList.remove('show');
+                authScreen.classList.add('hidden');
                 adminInterface.classList.add('show');
+                // Загружаем настройки после входа
+                loadSettings();
             } else {
-                authScreen.classList.add('show');
+                authScreen.classList.remove('hidden');
                 adminInterface.classList.remove('show');
             }
         }
@@ -1064,7 +1084,7 @@
             const enteredPassword = passwordInput.value;
             if (enteredPassword === currentPassword) {
                 localStorage.setItem('isLoggedIn', 'true');
-                authScreen.classList.remove('show');
+                authScreen.classList.add('hidden');
                 adminInterface.classList.add('show');
                 authError.classList.remove('show');
                 passwordInput.value = '';
@@ -1472,11 +1492,6 @@
 
         // ------------------------------ ЗАПУСК ------------------------------
         checkAuth();
-
-        // Если пользователь уже залогинен, загружаем настройки
-        if (localStorage.getItem('isLoggedIn') === 'true') {
-            loadSettings();
-        }
     })();
     </script>
 </body>
